@@ -59,7 +59,7 @@ fi
 if [ "$color_prompt" = yes ]; then
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$'
 fi
 unset color_prompt force_color_prompt
 
@@ -422,7 +422,7 @@ bash_prompt() {
 		local TITLEBAR='\[\033]0;\u:${NEW_PWD}\007\]'
 		;;
 	*)
-		local TITLEBAR=""
+		local TITLEBAR=''
 		;;
 	esac
 
@@ -432,9 +432,11 @@ bash_prompt() {
 	## BASH PROMT                                                             ##
 	## Generate promt and remove format from the rest                         ##
 	############################################################################
-	PS1="$TITLEBAR\n${PROMT_USER}${SEPARATOR_1}${PROMT_HOST}${SEPARATOR_2}${PROMT_PWD}${SEPARATOR_3}${PROMT_INPUT}"
-	
-	
+
+
+	PS1="$TITLEBAR\n${PROMT_USER}${SEPARATOR_1}${PROMT_HOST}${SEPARATOR_2}${PROMT_PWD}${SEPARATOR_3}$(__git_ps1)${PROMT_INPUT}"
+
+
 
 	## For terminal line coloring, leaving the rest standard
 	none="$(tput sgr0)"
@@ -459,8 +461,4 @@ PROMPT_COMMAND=bash_prompt_command
 ##	which gets updated by $PROMT_COMMAND on behalf of the terminal
 bash_prompt
 unset bash_prompt
-
-
-
 ### EOF ###
-
