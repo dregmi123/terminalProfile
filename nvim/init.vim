@@ -1,30 +1,21 @@
-colo desert
-set termguicolors
-set cursorline
-
-" highlight different part of the buffer
-augroup highlight
+set pyxversion=3
+set fileformat=unix
+augroup frontend_management
   autocmd!
-  hi Normal guifg=#c3a129
-  hi StatusLine guibg=orange guifg=black
-  hi Function cterm=bold guifg=#1594A2
-  hi String cterm=bold guifg=#038b62
-  hi Comment cterm=bold guifg=#0080fe guibg=white
-  hi CursorLine cterm=bold ctermbg=White ctermfg=Blue
-  hi Comment cterm=bold,underline ctermfg=cyan
-  hi Define guifg=red guibg=white
-  hi Function guifg=#bf00ff
-  hi CursorLine guibg=black
-  "hi NonText guibg=red
-  hi Include guifg=#ad1c74
-  hi Statement guibg=green
+  set relativenumber
+  syntax on
+  set termguicolors
+  set cursorline
+  hi Normal guifg=#69784d
+  hi CursorLine cterm=bold  guibg=#9ec0c0 guifg=#4e4642
+  hi Pmenu guibg=black guifg=white
+  hi Folded guibg= #7d4e5e guifg=#24222e
+  hi PmenuThumb guibg=green
+  hi PmenuSel ctermfg=242 guibg=green
 augroup END
 
 let mapleader=","
-let maplocalleader="\<Tab>"
-set number
-syntax
-set expandtab
+let maplocalleader="\/"
 set autoindent
 set softtabstop=4
 set shiftwidth=2
@@ -38,7 +29,7 @@ inoremap jk <esc>
 set guicursor=
 "Shift + Tab does inverse tab
 inoremap <S-Tab> <C-d>
-" pressing a character create another and put the cursor inside
+
 augroup character_create
   autocmd!
   inoremap ' ''<esc>i
@@ -50,8 +41,6 @@ augroup END
 
 "delete line in insert mode
 inoremap <leader>d <esc>ddi
-"See invisible characters
-"set list listchars=tab:>\ ,trail:+,eol:$
 
 "wrap to next line when end of line is reached
 set whichwrap+=<,>,[,]
@@ -61,7 +50,7 @@ nnoremap <leader>d dd
 "edit and source vimrc
 augroup edit_source
   autocmd!
-  nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+  nnoremap <leader>ev :tabedit $MYVIMRC<cr>
   nnoremap <leader>sv :source $MYVIMRC<cr>
 augroup END
 
@@ -74,13 +63,13 @@ augroup END
 
 "movement in insert mode
 augroup insert_mode_movement
-  autocmd!
+  "autocmd!
   inoremap <c-h> <left>
   inoremap <c-l> <right>
   inoremap <c-j> <down>
   inoremap <c-k> <up>
 augroup END
-"usually put them at last
+"
 "unmap some keys
 augroup unbind_keys
   autocmd!
@@ -89,22 +78,71 @@ augroup unbind_keys
   inoremap <right> <nop>
   inoremap <up> <nop>
   inoremap <down> <nop>
-augroup END
-
-"unbind in normal mode
-augroup normal_mode_unbind
-  autocmd!
   nnoremap <left> <nop>
   nnoremap <right> <nop>
   nnoremap <up> <nop>
   nnoremap <down> <nop>
 augroup END
 
+
 " plugin start from here
 call plug#begin('~/.vim/plugged')
-Plug 'dart-lang/dart-vim-plugin'
-Plug 'natebosch/vim-lsc'
-"Plug 'natebosch/vim-lsc-dart'
+  " status line 
+  Plug 'vim-airline/vim-airline'
+
+  " global plugin
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'rafi/awesome-vim-colorschemes'
+  
+  " snippets
+  Plug 'hrsh7th/vim-vsnip'
+  Plug 'hrsh7th/vim-vsnip-integ'
+
+  " dart and flutter
+  Plug 'dart-lang/dart-vim-plugin'
+  Plug 'Neevash/awesome-flutter-snippets'
+  
+  " javascript
+  Plug 'maxmellon/vim-jsx-pretty'
+
+  " python
+  "Plug 'jmcantrell/vim-virtualenv'
+
+  " hardcore mode
+  Plug 'wikitopian/hardmode'
 
 call plug#end()
 " plug ends here
+
+"popmenu select with h,j,k,l
+inoremap <c-j> <c-n>
+inoremap <c-k> <c-p>
+
+" NOTE: You can use other key to expand snippet.
+
+
+" coc-flutter
+nnoremap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
+" - https://github.com/Valloric/YouCompleteMe
+" - https://github.com/nvim-lua/completion-nvim
+"augroup normal_snippet
+  "autocmd!
+  "let g:UltiSnipsExpandTrigger="ep"
+  "let g:UltiSnipsJumpForwardTrigger="np"
+  "let g:UltiSnipsJumpBackwardTrigger="pp"
+"augroup END
+
+"need following setting for flutter
+augroup flutter_snippet
+  autocmd!
+  imap <expr> /e   vsnip#available(1)  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+  imap <expr> /n   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+  imap <expr> /p   vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+augroup END
+
+
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#enabled = 1
